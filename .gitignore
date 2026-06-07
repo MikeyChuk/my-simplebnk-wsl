@@ -1,0 +1,6 @@
+.env
+*.log
+bin/
+tmp/
+.DS_Store
+.vscode/
