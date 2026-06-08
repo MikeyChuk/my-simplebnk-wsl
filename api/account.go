@@ -37,7 +37,7 @@ func (server *Server) createAccount(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-// get single account
+// get single account changes
 type getAccountRequest struct {
 	ID int64 `uri:"id" binding:"required,min=1"`
 }
