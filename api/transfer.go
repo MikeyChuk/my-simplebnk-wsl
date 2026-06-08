@@ -9,7 +9,7 @@ import (
 	db "github.com/techschool/simplebank/db/sqlc"
 )
 
-//define struct - new branch
+//define struct my struct
 
 type transferRequest struct {
 	FromAccountID int64  `json:"from_account_id" binding:"required,min=1"`
