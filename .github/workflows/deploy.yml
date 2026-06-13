@@ -54,7 +54,7 @@ jobs:
 
     - name: Update kubeconfig
       run: |
-        aws eks update-kubeconfig --region eu-west-1 --my-eks-cluster-dorkindor
+        aws eks update-kubeconfig --region eu-west-1 --name my-eks-cluster-dorkindor
 
     - name: Deploy image to Amazon EKS
       run: |
