@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 const minSecretKeySize = 32
@@ -20,6 +20,7 @@ func NewJWTMaker(secretKey string) (Maker, error) {
 	if len(secretKey) < minSecretKeySize {
 		return nil, fmt.Errorf("invalid key size: must be at least %d characters", minSecretKeySize)
 	}
+
 	return &JWTMaker{secretKey}, nil
 }
 
@@ -31,6 +32,7 @@ func (maker *JWTMaker) CreateToken(username string, role string, duration time.D
 	}
 
 	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, payload)
+
 	token, err := jwtToken.SignedString([]byte(maker.secretKey))
 	return token, payload, err
 }
@@ -42,14 +44,17 @@ func (maker *JWTMaker) VerifyToken(token string, tokenType TokenType) (*Payload,
 		if !ok {
 			return nil, ErrInvalidToken
 		}
+
 		return []byte(maker.secretKey), nil
 	}
 
 	jwtToken, err := jwt.ParseWithClaims(token, &Payload{}, keyFunc)
 	if err != nil {
-		if errors.Is(err, jwt.ErrTokenExpired) {
+		verr, ok := err.(*jwt.ValidationError)
+		if ok && errors.Is(verr.Inner, ErrExpiredToken) {
 			return nil, ErrExpiredToken
 		}
+
 		return nil, ErrInvalidToken
 	}
 
@@ -58,9 +63,8 @@ func (maker *JWTMaker) VerifyToken(token string, tokenType TokenType) (*Payload,
 		return nil, ErrInvalidToken
 	}
 
-	err = payload.Valid(tokenType)
-	if err != nil {
-		return nil, err
+	if payload.Type != tokenType {
+		return nil, ErrInvalidToken
 	}
 
 	return payload, nil

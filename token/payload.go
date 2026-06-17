@@ -4,21 +4,19 @@ import (
 	"errors"
 	"time"
 
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
 
-// Different types of error returned by the VerifyToken function
 var (
-	ErrInvalidToken = errors.New("token is invalid")
 	ErrExpiredToken = errors.New("token has expired")
+	ErrInvalidToken = errors.New("token is invalid")
 )
 
 type TokenType byte
 
 const (
-	TokenTypeAccessToken  = 1
-	TokenTypeRefreshToken = 2
+	TokenTypeAccessToken  TokenType = 1
+	TokenTypeRefreshToken TokenType = 2
 )
 
 // Payload contains the payload data of the token
@@ -50,42 +48,20 @@ func NewPayload(username string, role string, duration time.Duration, tokenType 
 }
 
 // Valid checks if the token payload is valid or not
-func (payload *Payload) Valid(tokenType TokenType) error {
-	if payload.Type != tokenType {
-		return ErrInvalidToken
-	}
+// func (payload *Payload) Valid(tokenType TokenType) error {
+// 	if payload.Type != tokenType {
+// 		return ErrInvalidToken
+// 	}
+// 	if time.Now().After(payload.ExpiredAt) {
+// 		return ErrExpiredToken
+// 	}
+// 	return nil
+// }
+
+func (payload *Payload) Valid() error {
 	if time.Now().After(payload.ExpiredAt) {
 		return ErrExpiredToken
 	}
+
 	return nil
-}
-
-func (payload *Payload) GetExpirationTime() (*jwt.NumericDate, error) {
-	return &jwt.NumericDate{
-		Time: payload.ExpiredAt,
-	}, nil
-}
-
-func (payload *Payload) GetIssuedAt() (*jwt.NumericDate, error) {
-	return &jwt.NumericDate{
-		Time: payload.IssuedAt,
-	}, nil
-}
-
-func (payload *Payload) GetNotBefore() (*jwt.NumericDate, error) {
-	return &jwt.NumericDate{
-		Time: payload.IssuedAt,
-	}, nil
-}
-
-func (payload *Payload) GetIssuer() (string, error) {
-	return "", nil
-}
-
-func (payload *Payload) GetSubject() (string, error) {
-	return "", nil
-}
-
-func (payload *Payload) GetAudience() (jwt.ClaimStrings, error) {
-	return jwt.ClaimStrings{}, nil
 }

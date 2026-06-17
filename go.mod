@@ -6,7 +6,7 @@ require (
 	github.com/aead/chacha20poly1305 v0.0.0-20201124145622-1a5aba2a8b29
 	github.com/gin-gonic/gin v1.12.0
 	github.com/go-playground/validator/v10 v10.30.3
-	github.com/golang-jwt/jwt/v5 v5.3.1
+	github.com/golang-jwt/jwt/v4 v4.5.2
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.12.3
 	github.com/o1egl/paseto v1.0.0
